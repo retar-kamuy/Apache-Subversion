@@ -11,8 +11,8 @@ BUILD_FLAGS	+= -f ./.docker/Dockerfile
 RUN_FLAGS	 = -it
 RUN_FLAGS	+= --detach
 RUN_FLAGS	+= --name $(CONTAINER)
-# RUN_FLAGS	+= --volume /sys/fs/cgroup:/sys/fs/cgroup:ro
-RUN_FLAGS	+= --publish 80:80
+RUN_FLAGS	+= --volume /sys/fs/cgroup:/sys/fs/cgroup:ro
+RUN_FLAGS	+= --publish 8080:80
 
 all: build run
 
