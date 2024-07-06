@@ -11,9 +11,13 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 # VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
 
-FROM r8-systemd
+FROM r8-systemd AS r8-systemd-httpd
 RUN dnf -y install httpd \
     && dnf clean all \
     && systemctl enable httpd.service
 # EXPOSE 80
+CMD ["/usr/sbin/init"]
+
+FROM r8-systemd-httpd
+RUN dnf -y install subversion mod_dav_svn
 CMD ["/usr/sbin/init"]
