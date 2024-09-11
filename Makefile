@@ -1,21 +1,16 @@
 ###############################################################################
 # User settings
 ###############################################################################
+DOCKER		 = podman
 CONTAINER	 = r8-systemd-httpd
-
-#######################################
-# Common settings
-#######################################
-DOCKER	 	 = docker
 
 #######################################
 # Build settings
 #######################################
-BUILD_IMAGE	 = $(CONTAINER):build
+BUILD_IMAGE	 = $(CONTAINER):latest
 
 BUILD_FLAGS	 = --rm
 BUILD_FLAGS	+= --tag $(BUILD_IMAGE)
-BUILD_FLAGS	+= -f ./.docker/Dockerfile
 
 #######################################
 # Run settings
@@ -26,17 +21,10 @@ RUN_FLAGS	+= --name $(CONTAINER)
 RUN_FLAGS	+= --volume /sys/fs/cgroup:/sys/fs/cgroup:ro
 RUN_FLAGS	+= --publish 8080:80
 
-#######################################
-# Exec settings
-#######################################
-EXEC_FLAGS		 = -it
-
-EXEC_COMMAND	 = /bin/bash
-
 ###############################################################################
 # Rules
 ###############################################################################
-all: build run exec
+all: build run
 
 build:
 	$(DOCKER) build $(BUILD_FLAGS) .
@@ -44,11 +32,6 @@ build:
 run:
 	$(DOCKER) run $(RUN_FLAGS) $(BUILD_IMAGE)
 
-exec:
-	$(DOCKER) exec $(EXEC_FLAGS) $(CONTAINER) $(EXEC_COMMAND)
-
 clean:
 	$(DOCKER) rm -f $(CONTAINER)
-
-distclean: clean
-	$(DOCKER) image rm $(BUILD_IMAGE)
+	$(DOCKER) image prune --all --force
